@@ -96,6 +96,15 @@ def process_packet(packet):
         if alert_reasons:
             speak_alert(f"Security Alert: {alert_text} from {ip_src} to {ip_dst}")
 
+LOG_FILE = "logs.csv"
+
+def log_alert(src_ip, dst_ip, port, protocol, alert_msg):
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    with open(LOG_FILE, "a", newline="") as file:
+        writer = csv.writer(file)
+        writer.writerow([timestamp, src_ip, dst_ip, port, protocol, alert_msg])
+
+
 # === Start Sniffing ===
 def simulate_network_activity():
     sample_data = [
