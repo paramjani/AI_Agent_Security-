@@ -20,19 +20,26 @@ def speak_alert(message):
     engine.runAndWait()
 
 # === ML Anomaly Detection ===
+import os
+import joblib
+from sklearn.ensemble import IsolationForest
+import numpy as np
+
 def load_or_train_model():
-    if os.path.exists('ml_model.pkl'):
-        return joblib.load('ml_model.pkl')
-    else:
-        # Train on dummy normal traffic
-        df = pd.DataFrame({
-            'port': [80, 443, 53, 22, 8080, 3306],
-            'proto': [6, 6, 17, 6, 6, 6]
-        })
-        model = IsolationForest(contamination=0.2)
-        model.fit(df)
-        joblib.dump(model, 'ml_model.pkl')
+    try:
+        if os.path.exists("ml_model.pkl"):
+            return joblib.load("ml_model.pkl")
+        else:
+            raise FileNotFoundError
+    except:
+        # Train simple model if not found or loading fails
+        print("Training new ML model...")
+        X_train = np.array([[80, 6], [443, 6], [53, 17], [22, 6], [25, 6]])  # dummy normal port/protocol data
+        model = IsolationForest(contamination=0.1)
+        model.fit(X_train)
+        joblib.dump(model, "ml_model.pkl")
         return model
+
 
 model = load_or_train_model()
 
