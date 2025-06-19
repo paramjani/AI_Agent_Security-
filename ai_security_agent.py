@@ -97,9 +97,19 @@ def process_packet(packet):
             speak_alert(f"Security Alert: {alert_text} from {ip_src} to {ip_dst}")
 
 # === Start Sniffing ===
+def simulate_network_activity():
+    sample_data = [
+        ("192.168.1.2", "10.0.0.5", 443, 6, "Normal traffic"),
+        ("192.168.1.3", "10.0.0.8", 6667, 17, "Suspicious port"),
+        ("192.168.1.4", "10.0.0.9", 23, 6, "Anomaly")
+    ]
+    for src, dst, port, proto, note in sample_data:
+        log_alert(src, dst, port, proto, note)
+
 def start_monitoring():
-    print("🔒 AI Security Agent running...")
-    sniff(filter="ip", prn=process_packet, store=0)
+    print("🔒 Simulated mode active (no packet sniffing).")
+    simulate_network_activity()
+
 
 if __name__ == "__main__":
     start_monitoring()
